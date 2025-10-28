@@ -8,7 +8,7 @@ import {
   MessageCircle,
   MoreHorizontal,
   Edit,
-  Camera,
+  Camera,Briefcase
 } from "lucide-react";
 
 export default function PostHeader({ activeTab, setActiveTab }) {
@@ -43,6 +43,7 @@ export default function PostHeader({ activeTab, setActiveTab }) {
     { id: "groups", Icon: Users, label: "Groups" },
     { id: "adverts", Icon: Megaphone, label: "Adverts" },
     { id: "forums", Icon: MessageCircle, label: "Forums" },
+    { id: "jobs", Icon: Briefcase, label: "Jobs" },
     { id: "more", Icon: MoreHorizontal, label: "More" },
   ];
 

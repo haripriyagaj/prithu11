@@ -15,7 +15,8 @@ import ActivitySection from "../components/Profilecard/ActivitySection";
 import FriendsSection from "../components/Profilecard/FriendsSection";
 import GroupsSection from "../components/Profilecard/GroupsSection";
 import Advertisement from "../components/Profilecard/Advertisement";
-import ForumsSection from "../components/Profilecard/FormsSection";// ← Fixed typo: was "FormsSection"
+import ForumsSection from "../components/Profilecard/FormsSection";
+import Jobsection from "../components/Jobs/Jobsection";
 
 const Profilelayout = () => {
   const [activeTab, setActiveTab] = useState("personal");
@@ -91,6 +92,8 @@ const Profilelayout = () => {
             <Advertisement />
           ) : activeTab === "forums" ? (
             <ForumsSection />
+          ) : activeTab === "jobs" ? (
+            <Jobsection />
           ) : (
             <div className="p-8 text-center text-gray-500 bg-gray-50 rounded-lg">
               This section is under development.

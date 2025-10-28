@@ -55,6 +55,7 @@ const Feed = ({ authUser }) => {
           type: feed.type || "image",
           contentUrl: feed.contentUrl || "",
           caption: feed.caption || "",
+          description: feed.description || "",
           _id: feed._id || "guest",
           userName: feed.userName || "Unknown",
           profileAvatar: feed.profileAvatar || "",

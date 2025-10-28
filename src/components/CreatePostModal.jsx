@@ -11,6 +11,7 @@ import {
   FaAd,
   FaTimes,
 } from "react-icons/fa";
+import { Axios } from "axios";
 
 // Replace with your GIPHY API key (get free at https://developers.giphy.com/)
 const GIPHY_API_KEY = "YOUR_GIPHY_API_KEY";

@@ -48,6 +48,7 @@ const Postcard = ({ postData = {}, authUser, token, onHidePost, onNotInterested 
     userName,
     profileAvatar,
     caption,
+    description="",
     timeAgo = "",
   } = postData;
 
@@ -224,7 +225,24 @@ const Postcard = ({ postData = {}, authUser, token, onHidePost, onNotInterested 
           <Stack>
             <Typography fontWeight={500}>{userName}</Typography>
             <Typography variant="caption" color="gray">{timeAgo}</Typography>
+            {/* ----------  NEW DESCRIPTION BLOCK ---------- */}
+      {description && description.length >= 200 && (
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            mt: 0.5,
+            overflow: "hidden",
+           display: "-webkit-box",
+            WebkitLineClamp: 4,          // show ~4 lines, adjust as needed
+            WebkitBoxOrient: "vertical",
+         }}
+        >
+          {description}
+        </Typography>
+      )}
           </Stack>
+          
         </Stack>
         <PostOptionsMenu
           feedId={feedId}
