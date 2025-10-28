@@ -1,33 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
-import {
-  FaCamera,
-  FaMapMarkerAlt,
-  FaSmile,
-  FaUserTag,
-  FaUsers,
-  FaLink,
-  FaPlayCircle,
-  FaBook,
-  FaAd,
-  FaTimes,
-} from "react-icons/fa";
-
-// Replace with your GIPHY API key (get free at https://developers.giphy.com/)
-const GIPHY_API_KEY = "YOUR_GIPHY_API_KEY";
-
-const buttons = [
-  { label: "Photo / Video", icon: <FaCamera />, type: "media" },
-  { label: "Post Gif", icon: <FaSmile />, type: "gif" },
-  { label: "Share in Group", icon: <FaUsers />, type: "group" },
-  { label: "Go Live", icon: <FaPlayCircle />, type: "live" },
-  { label: "Post A Book", icon: <FaBook />, type: "book" },
-  { label: "Post Location", icon: <FaMapMarkerAlt />, type: "location" },
-  { label: "Tag to Friend", icon: <FaUserTag />, type: "tag" },
-  { label: "Share Link", icon: <FaLink />, type: "link" },
-  { label: "Post Online Course", icon: <FaBook />, type: "course" },
-  { label: "Post an Ad", icon: <FaAd />, type: "ad" },
-];
-
+import { motion, AnimatePresence } from "framer-motion";
+import LeftSidebarButtons from "../components/createPostModelComponets/leftSidebarButtons";
+import MediaUploader from "../components/createPostModelComponets/mediaUploader";
+import GifSelector from "../components/createPostModelComponets/gifSelector";
+import LocationInput from "../components/createPostModelComponets/locationInput";
+import TagFriends from "../components/createPostModelComponets/tagFriends";
+import { uploadCreatorFeed } from "../API_Services/postServices";
+import { toast } from "react-hot-toast";
+import api from "../api/axios";
+ 
 export default function CreatePostModal({ open, onClose }) {
   const [postText, setPostText] = useState("");
   const [selectedBtn, setSelectedBtn] = useState(null);
@@ -43,7 +24,7 @@ export default function CreatePostModal({ open, onClose }) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const fileRef = useRef(null);
-
+ 
   // 🟢 Fetch categories
   useEffect(() => {
     if (!open) return;
@@ -58,18 +39,18 @@ export default function CreatePostModal({ open, onClose }) {
     };
     fetchCategories();
   }, [open]);
-
+ 
   // 🟢 Handle file upload
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
-
+ 
     const fileType = selectedFile.type.startsWith("video") ? "video" : "image";
     if (files.length > 0 && files[0].type !== fileType) {
       toast.error("Upload only one type (image or video)");
       return;
     }
-
+ 
     setType(fileType);
     const newFile = {
       file: selectedFile,
@@ -79,25 +60,25 @@ export default function CreatePostModal({ open, onClose }) {
     };
     setFiles([newFile]);
   };
-
+ 
   const handleRemoveFile = (index) => {
     URL.revokeObjectURL(files[index]?.preview);
     setFiles([]);
     setType("");
   };
-
+ 
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file) handleFileChange({ target: { files: [file] } });
   };
-
+ 
   // 🟢 Publish or Schedule feed
   const publish = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return toast.error("Please login first");
-
+ 
       setLoading(true);
       const formData = {
         dec: postText,
@@ -107,7 +88,7 @@ export default function CreatePostModal({ open, onClose }) {
         type,
         scheduleDate: isScheduled ? scheduleDate : null,
       };
-
+ 
       const res = await uploadCreatorFeed(formData, token);
       toast.success(res.message || "Feed uploaded successfully");
       onClose?.();
@@ -117,9 +98,9 @@ export default function CreatePostModal({ open, onClose }) {
       setLoading(false);
     }
   };
-
+ 
   if (!open) return null;
-
+ 
   return (
     <>
       {/* 🟣 Overlay */}
@@ -142,17 +123,17 @@ export default function CreatePostModal({ open, onClose }) {
           >
             ×
           </button>
-
+ 
           <div className="text-center mt-6 mb-4 text-2xl font-semibold text-blue-500">
             + Create New Post
           </div>
-
+ 
           <div className="flex gap-5 px-6 pb-6">
             <LeftSidebarButtons
               selectedBtn={selectedBtn}
               onSelect={setSelectedBtn}
             />
-
+ 
             <div className="flex-1 flex flex-col">
               {/* 📝 Post Text */}
               <textarea
@@ -162,7 +143,7 @@ export default function CreatePostModal({ open, onClose }) {
                 onChange={(e) => setPostText(e.target.value)}
                 rows={3}
               />
-
+ 
               <AnimatePresence>
                 {selectedBtn === "media" && (
                   <motion.div
@@ -183,7 +164,7 @@ export default function CreatePostModal({ open, onClose }) {
                         <option value="english">English</option>
                         <option value="hindi">Hindi</option>
                       </select>
-
+ 
                       <select
                         value={categoryId}
                         onChange={(e) => setCategoryId(e.target.value)}
@@ -196,7 +177,7 @@ export default function CreatePostModal({ open, onClose }) {
                           </option>
                         ))}
                       </select>
-
+ 
                       {/* 🕓 Schedule Toggle */}
                       <div className="flex items-center gap-2">
                         <span className="text-gray-700 text-sm">Schedule</span>
@@ -216,7 +197,7 @@ export default function CreatePostModal({ open, onClose }) {
                         </div>
                       </div>
                     </div>
-
+ 
                     {/* 📅 Schedule Picker */}
                     <AnimatePresence>
                       {isScheduled && (
@@ -239,7 +220,7 @@ export default function CreatePostModal({ open, onClose }) {
                         </motion.div>
                       )}
                     </AnimatePresence>
-
+ 
                     {/* 📤 Media Upload Section */}
                     <MediaUploader
                       files={files}
@@ -252,7 +233,7 @@ export default function CreatePostModal({ open, onClose }) {
                   </motion.div>
                 )}
               </AnimatePresence>
-
+ 
               {/* 🟢 Other Tabs */}
               {selectedBtn === "gif" && (
                 <GifSelector
@@ -260,18 +241,18 @@ export default function CreatePostModal({ open, onClose }) {
                   setSelectedGif={setSelectedGif}
                 />
               )}
-
+ 
               {selectedBtn === "location" && (
                 <LocationInput location={location} setLocation={setLocation} />
               )}
-
+ 
               {selectedBtn === "tag" && (
                 <TagFriends
                   taggedFriends={taggedFriends}
                   setTaggedFriends={setTaggedFriends}
                 />
               )}
-
+ 
               {/* 🟢 Publish Button */}
               <button
                 className="w-full bg-[#26Aeee] hover:bg-blue-600 text-white font-medium text-lg rounded-md py-2.5 mt-5 transition-all"
@@ -287,3 +268,5 @@ export default function CreatePostModal({ open, onClose }) {
     </>
   );
 }
+ 
+ 
